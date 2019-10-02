@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <div class="text-center container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="card" style="box-shadow:2px 1px 12px 10px grey;border: 1px solid rgba(0, 0, 0, 0.87);">
+                    <p style="
+            position: absolute;
+            top: 10px;
+            left: 30px;
+            color: red;
+            font-weight: bold;
+            font-size: 30px; ">
+                        <big>&bull;</big> Live
+                    </p>
+                    <img src="{{ url_for('streamer') }}" class="card-img-top" alt="RPi Video Stream">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <strong>Streaming from Pi v3</strong>
+                        </h5>
+                        <div class="">
+
+                            {#<button type="button" class="btn btn-primary disabled">Record <i
+                                    class="fa fa-video-camera"></i></button>
+                            <button type="button" class="btn btn-secondary disabled">Pause <i class="fa fa-pause"></i>
+                            </button>
+                            <button type="button" class="btn btn-success disabled">Snap <i class="fa fa-camera"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger disabled">Stop <i class="fa fa-stop"></i>
+                            </button>#}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+{% endblock %}
