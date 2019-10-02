@@ -2,40 +2,136 @@
 {% block content %}
 
     <div class="text-center container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div class="card" style="box-shadow:2px 1px 12px 10px grey;border: 1px solid rgba(0, 0, 0, 0.87);">
-                    <p style="
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="card" style="box-shadow:2px 1px 12px 10px grey;border: 1px solid rgba(0, 0, 0, 0.87);">
+                <p style="
             position: absolute;
             top: 10px;
             left: 30px;
             color: red;
             font-weight: bold;
             font-size: 30px; ">
-                        <big>&bull;</big> Live
-                    </p>
-                    <img src="{{ url_for('streamer') }}" class="card-img-top" alt="RPi Video Stream">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <strong>Streaming from Pi v3</strong>
-                        </h5>
-                        <div class="">
-
-                            {#<button type="button" class="btn btn-primary disabled">Record <i
-                                    class="fa fa-video-camera"></i></button>
-                            <button type="button" class="btn btn-secondary disabled">Pause <i class="fa fa-pause"></i>
-                            </button>
-                            <button type="button" class="btn btn-success disabled">Snap <i class="fa fa-camera"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger disabled">Stop <i class="fa fa-stop"></i>
-                            </button>#}
+                    <big>&bull;</big> Live
+                </p>
+                <img src="{{ url_for('streamer') }}" class="card-img-top" alt="RPi Video Stream">
+                <div class="card-body">
+                    <h5 class="card-title pb-2">
+                        <strong class=" alert alert-primary"><i class="fa fa-truck-monster"></i>&nbsp;&nbsp;&nbsp;Control
+                            Dashboard</strong>
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-8 col-sm-8 col-xs-8 col-lg-8">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-4"></div>
+                                <div class="col-md-2 col-sm-2 col-xs-4">
+                                    <button data-action="forward" type="button" class="btn btn-primary btn-lg"><i
+                                            class="fa fa-arrow-up"></i></button>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-4">
+                                    <button data-action="left" type="button" class="btn btn-primary btn-lg"><i
+                                            class="fa fa-arrow-left"></i></button>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-4"></div>
+                                <div class="col-md-2 col-sm-2 col-xs-4">
+                                    <button data-action="right" type="button" class="btn btn-primary btn-lg"><i
+                                            class="fa fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-4"></div>
+                                <div class="col-md-2 col-sm-2 col-xs-4">
+                                    <button data-action="backward" type="button" class="btn btn-primary btn-lg"><i
+                                            class="fa fa-arrow-down"></i></button>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-4"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 pt-3">
+                            <div class="row ">
+                                <i class="fa fa-thermometer-half pt-2" style="color: green;"></i> &nbsp;&nbsp;&nbsp;
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button data-action="speed_ups" type="button" class="btn btn-secondary btn-lg"><i
+                                            class="fa fa-arrow-circle-up"></i></button>
+                                    <button data-action="speed_down" type="button" class="btn btn-warning btn-lg"><i
+                                            class="fa fa-arrow-circle-down"></i></button>
+                                </div>
+                            </div>
+                            <div class="row pt-2">
+                                <i class="fa fa-traffic-light pt-2" style="color: red;"></i> &nbsp;&nbsp;&nbsp;
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button data-action="stop" type="button"
+                                            class="btn btn-secondary btn-lg btn-danger"><i
+                                            class="fa fa-stop-circle"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    {#<div class="row col-md-12">
+                            <div class=" col-md-12 pt-5">
+                                <button type="button" class="btn btn-primary disabled">Record <i
+                                        class="fa fa-video-camera"></i></button>
+                                <button type="button" class="btn btn-secondary disabled">Pause <i
+                                        class="fa fa-pause"></i>
+                                </button>
+                                <button type="button" class="btn btn-success disabled">Snap <i class="fa fa-camera"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger disabled">Stop <i class="fa fa-stop"></i>
+                                </button>
+                            </div>
+
+                        </div>#}
                 </div>
             </div>
             <div class="col-md-2"></div>
         </div>
 
     </div>
+{% endblock %}
+{% block bottom %}
+    <script type="text/javascript">
+        $(function () {
+            $("button[data-action]").click(function (evt) {
+                console.log("button pressed: ", $(this).data("action"))
+                emitAction($(this).data("action"))
+            });
+
+            $(document).on("keyup", function (evt) {
+                console.log("key pressed: ", evt.which, " action: ", mapKeys()[evt.which])
+                if (mapKeys().hasOwnProperty(evt.which)) {
+                    emitAction(mapKeys()[evt.which])
+                }
+            });
+
+            function emitAction(action, endpoint = 'control') {
+                $.post(
+                    `/socket.io/${endpoint}`,
+                    {action, time: (new Date()).toISOString()},
+                    function () {
+                    })
+            }
+
+            function mapKeys() {
+                return {
+                    38: "forward",
+                    104: "forward", // numpad key
+                    40: "backward",
+                    98: "backward", // numpad key
+                    37: "left",
+                    100: "left", // numpad key
+                    39: "right",
+                    102: "right", // numpad key
+                    32: "stop",
+                    77: "speed_up",
+                    107: "speed_up",
+                    78: "speed_down"
+                    109: "speed_down"
+                }
+            }
+        });
+    </script>
 {% endblock %}
