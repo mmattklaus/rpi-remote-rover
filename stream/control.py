@@ -8,7 +8,7 @@ class Car(object):
     def __init__(self, speed_steps=25):
         GPIO.setmode(GPIO.BOARD)
 
-        self.EN_A = 7
+        self.EN_A = 18
         self.IN_1 = 11
         self.IN_2 = 12
         self.IN_3 = 13
@@ -17,6 +17,7 @@ class Car(object):
 
         self.DUTY_STEPPER = speed_steps
         self.speed = 50
+	GPIO.setwarnings(False)
 
     # def run(self):
     #     try:
@@ -42,8 +43,8 @@ class Car(object):
         GPIO.setup(self.IN_4, GPIO.OUT, initial=False)
         GPIO.setup(self.EN_B, GPIO.OUT)
 
-        self.pwma = GPIO.PWM(self.EN_A, 1000)
-        self.pwmb = GPIO.PWM(self.EN_B, 1000)
+        self.pwma = GPIO.PWM(self.EN_A, 100)
+        self.pwmb = GPIO.PWM(self.EN_B, 100)
 
         self.pwma.start(self.speed)
         self.pwmb.start(self.speed)
